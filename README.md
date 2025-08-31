@@ -1,7 +1,41 @@
-# 📝 Dynamic Form System
+# 🚀 Dynamic Form Project
 
-This project implements a **schema-driven dynamic form generator** using **React + Redux**.  
-The **layout JSON** defines the structure of the form, and the renderer (`DynamicForm`, `DynamicSection`, `FieldGroup`, `FormComponentFactory`, etc.) creates UI automatically.
+This project is built with **React**, **Redux Toolkit**, and **Vite**.  
+It implements a **schema-driven dynamic form generator** with support for validators, value functions, and Redux-based state management.
+
+---
+
+## 📦 Prerequisites
+
+Before starting, ensure you have:
+
+- [Node.js](https://nodejs.org/) (v18 or later recommended)  
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)  
+
+Check versions:
+```bash
+node -v
+npm -v
+```
+
+# ⚡ Getting Started
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/Aditya3007/dynamic-contact-form.git
+cd dynamic-contact-form
+```
+
+## 2. Install dependencies
+```bash
+npm install
+```
+
+## 3. Start the development server
+```bash
+npm run dev
+```
 
 ---
 
@@ -297,3 +331,60 @@ Example schema:
     }
   ]
 }
+```
+
+# 📋 Contact Form Example
+
+The `ContactForm` component demonstrates how to render a **dynamic form** using the schema-driven system.  
+It wires together **validators**, **value functions**, and **form identity** through context providers.
+
+---
+
+## 🔑 Key Concepts
+
+### 1. **FieldValidatorProvider**
+- Provides a **map of validator functions** (e.g. `nameValidator`, `emailValidator`, `phoneValidator`).  
+- Allows fields to reference validators by name (`validationFn`) inside the schema.  
+
+### 2. **FieldValueFunctionProvider**
+- Provides **dynamic value functions** (e.g. `mapCountries`, `filterCitiesByCountry`).  
+- These are used in `__conditions` inside the schema to dynamically resolve field props (like dropdown items).  
+
+### 3. **FormIdProvider**
+- Wraps the form and injects:
+  - `formId` → Unique identifier for the form instance (e.g. `"1"`).  
+  - `formPath` → Path in the Redux store where the form data is stored (e.g. `"contactForm"`).  
+- Ensures that each form instance only reads/writes its own data in Redux.  
+
+---
+
+## 🧩 Usage Example
+
+```jsx
+import React from 'react'
+import DynamicForm from '../../dynamic-form/components/DynamicForm/DynamicForm';
+import { FormIdProvider } from '../../contexts/FormDataContext';
+import validators from './utils/validators';
+import valueFunctions from './utils/valueFunctions';
+import { FieldValidatorProvider } from '../../contexts/FieldValidatorsContext';
+import { FieldValueFunctionProvider } from '../../contexts/FieldValueFunctionContext';
+import contactFormSchema from './contact_form_layout.json';
+
+const ContactForm = () => {
+  return (
+    <FieldValidatorProvider validators={validators}>
+      <FieldValueFunctionProvider valueFunctions={valueFunctions}>
+        {/* 
+          In case of multiple contacts, we can map and use contactId as the formId.
+          If rendering a different form, we can provide its own validators and valueFunctions.
+        */}
+        <FormIdProvider formId="1" formPath="contactForm">
+          <DynamicForm schema={contactFormSchema} />
+        </FormIdProvider>
+      </FieldValueFunctionProvider>
+    </FieldValidatorProvider>
+  )
+}
+
+export default ContactForm;
+```
