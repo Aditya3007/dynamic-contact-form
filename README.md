@@ -16,7 +16,107 @@ Every element in the form system is a **dumb (presentational) component**:
 
 All state, validation, conditional logic, and data wiring is handled **outside the components** (in hooks like `useFieldData`, `useConditionalFieldsData`).
 
+## 🧩 Components Breakdown
+
+### `DynamicForm`
+- **Purpose**: Root form renderer.  
+- **Responsibilities**:
+  - Receives the schema (`title`, `description`, `layout`).  
+  - Renders each `section` via `DynamicSection`.  
+- **Notes**: No state or validation logic, purely schema → components mapping.  
+
 ---
+
+### `DynamicSection`
+- **Purpose**: Represents a form section (e.g. "Contact", "Additional Information").  
+- **Responsibilities**:
+  - Renders header (`header`, `subHeader`).  
+  - Toggles **collapsed/expanded** state (local UI state only).  
+  - Maps each `field` to `FormComponentFactory`.  
+- **Notes**: No awareness of values or Redux, just UI layout.  
+
+---
+
+### `FieldGroup`
+- **Purpose**: Groups multiple related fields in a single row (e.g. First Name + Last Name).  
+- **Responsibilities**:
+  - Lays out its child fields using flex/grid.  
+  - Passes schema into `FormComponentFactory`.  
+- **Notes**: Layout-only, no state or validation.  
+
+---
+
+### `FormComponentFactory`
+- **Purpose**: Chooses which component to render for each field type.  
+- **Responsibilities**:
+  - Reads `type` from schema (`string`, `number`, `email`, `select`, `long-text`, etc.).  
+  - Returns the correct field component (`TextField`, `SelectField`, `PhoneNumberField`, `TextAreaField`).  
+  - Passes down resolved props from hooks (`useFieldData`).  
+- **Notes**: No rendering logic of its own, just a switchboard.  
+
+---
+
+### Field Components
+
+#### `TextField`
+- **Purpose**: Renders a single-line text input.  
+- **Props**: `name`, `label`, `value`, `onChange`, `required`, `messages`.  
+- **Notes**: Calls `onChange(newValue)` when input changes.  
+
+#### `TextAreaField`
+- **Purpose**: Renders a multi-line text area.  
+- **Props**: Same as `TextField`, with `rows` optional.  
+
+#### `SelectField`
+- **Purpose**: Renders a dropdown/select input.  
+- **Props**: `items`, `placeHolder`, `value`, `onChange`, `messages`.  
+
+#### `PhoneNumberField`
+- **Purpose**: Renders a country code dropdown + phone number input.  
+- **Props**: `countries` (list of `{ code, flag }`), `value` (object `{ countryCode, phoneNumber }`).  
+- **Notes**: Maintains local state (selected country + phone), calls `onChange({ countryCode, phoneNumber })`.  
+
+---
+
+### Utility Components
+
+#### `FormFieldLabel`
+- **Purpose**: Renders field label with optional `*` for required fields.  
+- **Props**: `name`, `label`, `required`.  
+
+#### `FormFieldMessages`
+- **Purpose**: Renders validation messages (error, warning, info, success).  
+- **Props**: `messages` (array of `{ type, text }`).  
+
+---
+
+# ⚒️ Hooks Documentation
+
+This project uses several **custom hooks** to keep components dumb and move all data/logic into hooks.  
+Each hook has a **single responsibility**: selecting values, handling updates, or resolving conditional props.  
+
+---
+
+## `useFormData`
+
+**Purpose**: Access the current form’s unique identifier (`formId`, `formPath`) from context.  
+
+**Why**: Keeps context stable; components only need `formId` & `formPath`, not the entire form state.  
+
+**Usage**:
+```js
+const {formId, formPath} = useFormData();
+
+## `useFieldValue`
+
+**Purpose**: Subscribe to a single field’s value from Redux state.  
+
+**Why**: Ensures isolation — only re-renders the field when its value changes. 
+
+**Usage**:
+```js
+const value = useFieldValue('firstName', 'someFormId', 'contactForm');
+
 
 ## 📦 JSON Schema Layout
 
