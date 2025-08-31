@@ -107,6 +107,8 @@ Each hook has a **single responsibility**: selecting values, handling updates, o
 ```js
 const {formId, formPath} = useFormData();
 
+```
+
 ## `useFieldValue`
 
 **Purpose**: Subscribe to a single field’s value from Redux state.  
@@ -116,6 +118,97 @@ const {formId, formPath} = useFormData();
 **Usage**:
 ```js
 const value = useFieldValue('firstName', 'someFormId', 'contactForm');
+```
+
+## `useFieldChangeHandler`
+
+**Purpose**: Return a stable `onChange` callback for a field. 
+
+**Why**: Prevents React.memo optimizations from breaking due to new handler references every render.
+
+**Usage**:
+```js
+const onChange = useFieldChangeHandler("firstName", "some-form-id", "contactForm");
+
+// call it from input
+<input value={value} onChange={(e) => onChange(e.target.value)} />
+
+```
+
+## `useFieldData`
+
+**Purpose**: Central hook that prepares all props for a field component.
+
+**Why**: Keeps components dumb — they only render what they’re given.
+
+**Usage**:
+```js
+const props = useFieldData({ field });
+// props = { type, name, value, onChange, label, required, ...conditionalProps }
+
+```
+
+## `useConditionalFieldsData`
+
+**Purpose**: Compute conditional props defined in schema (__conditions).
+
+**Why**: Enables dynamic behavior like dependent dropdowns. And can be extended to other inputs as well
+
+**Usage**:
+```js
+const conditionalProps = useConditionalFieldsData(field.__conditions, "some-form-id", "contactForm");
+
+// e.g. { items: ["New York", "Los Angeles"] }
+
+
+```
+
+## `useGlobalProps`
+
+**Purpose**: Access global reference data (e.g. list of countries, cities) from Redux.
+
+**Why**: Keeps global lookups separate from form state.
+
+**Usage**:
+```js
+const globalProps = useGlobalProps();
+// → { countries: [...], cities: [...] }
+
+```
+
+## 🔄 Hook Responsibilities Flow
+
+useFormData
+↓ provides form identifier
+useFieldValue
+↓ selects current field value from Redux
+useFieldChangeHandler
+↓ creates stable onChange dispatcher
+useConditionalFieldsData
+↓ resolves __conditions dynamically
+useFieldData
+↓ combines all into final props for the component
+
+
+---
+
+## ✅ Benefits
+
+- **Isolation**:  
+  Each field re-renders only when its own value or its dependencies change.  
+
+- **Separation of Concerns**:  
+  UI components only render; hooks handle state, data, and logic.  
+
+- **Extensibility**:  
+  Easy to add new conditional resolvers, validation functions, or field types without touching core components.  
+
+- **Reusability**:  
+  Hooks can be reused across different forms and schemas.  
+
+- **Predictability**:  
+  Clear flow of data from schema → Redux → hooks → UI, making the system easy to debug and extend.  
+
 
 
 ## 📦 JSON Schema Layout
