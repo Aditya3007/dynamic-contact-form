@@ -1,0 +1,10 @@
+.fieldGroupContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.fieldGroupContainer > * {
+  flex: 1 1 45%; /* two fields per row like screenshot */
+  min-width: 200px;
+}

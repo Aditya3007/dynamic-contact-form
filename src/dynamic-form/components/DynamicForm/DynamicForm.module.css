@@ -1,0 +1,24 @@
+.formContainer {
+  max-width: 800px;         /* keep form centered and readable */
+  margin: 0 auto;           /* center on page */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111827;           /* neutral text */
+}
+
+.formContainer h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #111827;
+}
+
+.formContainer p {
+  font-size: 0.95rem;
+  color: #6b7280;           /* muted description */
+  margin-bottom: 0.25rem;
+}
+
+.formSections {
+  display: flex;
+  flex-direction: column;     
+}

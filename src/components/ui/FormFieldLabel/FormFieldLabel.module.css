@@ -1,0 +1,13 @@
+.formFieldLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280; /* muted gray */
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.formFieldLabel span {
+  color: #dc2626; /* red for required */
+  margin-right: 0.25rem;
+}

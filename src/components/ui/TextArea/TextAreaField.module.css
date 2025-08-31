@@ -1,0 +1,21 @@
+.fieldContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.fieldContainer textarea {
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #111827;
+  background: transparent;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.fieldContainer textarea:focus {
+  border-bottom-color: #2563eb;
+}

@@ -1,0 +1,95 @@
+{
+  "layout": [
+    {
+      "type": "section",
+      "header": "Contact",
+      "name": "contactSection",
+      "fields": [
+        {
+          "type": "field-group",
+          "name": "nameGroup",
+          "fields": [
+            {
+              "name": "firstName",
+              "label": "First Name",
+              "type": "string",
+              "required": true,
+              "validationFn": "nameValidator"
+            },
+            {
+              "name": "lastName",
+              "label": "Last Name",
+              "type": "string",
+              "required": true,
+              "validationFn": "nameValidator"
+            }
+          ]
+        },
+        {
+          "name": "phone",
+          "label": "Phone Number",
+          "type": "number",
+          "required": true,
+          "validationFn": "phoneValidator",
+          "__conditions": {
+            "countries": {
+              "useGlobalProps": true,
+              "valueFn": "mapCountryCodeAndFlags"
+            }
+          }
+        },
+        {
+          "name": "email",
+          "label": "Email",
+          "type": "email",
+          "required": true,
+          "validationFn": "emailValidator"
+        },
+        {
+          "name": "address",
+          "label": "Address",
+          "type": "long-text"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "header": "Additional Information",
+      "fields": [
+        {
+          "name": "businessName",
+          "label": "Business Name",
+          "type": "string"
+        },
+        {
+          "name": "streetAddress",
+          "label": "Street Address",
+          "type": "string"
+        },
+        {
+          "name": "city",
+          "label": "City",
+          "type": "select",
+          "__conditions": {
+            "items": {
+              "dependsOn": ["country"],
+              "useGlobalProps": true,
+              "valueFn": "filterCitiesByCountry"
+            }
+          }
+        },
+        {
+          "name": "country",
+          "label": "Country",
+          "type": "select",
+          "__conditions": {
+            "items": {
+              "useGlobalProps": true,
+              "valueFn": "mapCountries"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
